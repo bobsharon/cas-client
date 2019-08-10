@@ -69,21 +69,18 @@
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-http</artifactId>
             <version>${pac4j.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-cas -->
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-cas</artifactId>
             <version>${pac4j.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-jwt -->
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-jwt</artifactId>
             <version>${pac4j.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-spring -->
         <dependency>
