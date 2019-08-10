@@ -51,7 +51,7 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
     @Value("#{@environment['cas.client-host-url']?:null }")
     private String callbackUrl;
 
-    @Value("#{@environment['app.jwt.salt']}")
+    @Value("${app.jwt.salt}")
     private String salt;
 
     /**
