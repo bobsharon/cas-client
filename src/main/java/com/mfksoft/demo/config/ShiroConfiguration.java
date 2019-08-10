@@ -13,20 +13,24 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.client.rest.CasRestFormClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
-import org.pac4j.http.client.direct.HeaderClient;
+import org.pac4j.http.client.direct.ParameterClient;
 import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -42,13 +46,13 @@ import java.util.Map;
 @Configuration
 public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
 
-    @Value("#{@environment['cas.server-url-prefix']?:null}")
+    @Value("#{@environment['app.prefixUrl']?:null}")
     private String prefixUrl;
 
-    @Value("#{@environment['cas.server-login-url']?:null }")
+    @Value("#{@environment['app.casLoginUrl']?:null }")
     private String casLoginUrl;
 
-    @Value("#{@environment['cas.client-host-url']?:null }")
+    @Value("#{@environment['app.callbackUrl']?:null }")
     private String callbackUrl;
 
     @Value("${app.jwt.salt}")
@@ -107,10 +111,11 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
      * @return HeaderClient
      */
     @Bean
-    protected HeaderClient headerClient() {
-        HeaderClient headerClient = new HeaderClient("X-Token",jwtAuthenticator());
-        headerClient.setName("jwt");
-        return headerClient;
+    protected ParameterClient parameterClient() {
+        ParameterClient parameterClient = new ParameterClient("token", jwtAuthenticator());
+        parameterClient.setSupportGetRequest(true);
+        parameterClient.setName("jwt");
+        return parameterClient;
     }
 
     /**
@@ -120,7 +125,7 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
     @Bean
     protected Clients clients() {
         Clients clients = new Clients();
-        clients.setClients(casClient(), casRestFormClient(), headerClient());
+        clients.setClients(casClient(), casRestFormClient(), parameterClient());
         return clients;
     }
 
@@ -183,6 +188,9 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
         callbackFilter.setConfig(casConfig());
         LogoutFilter logoutFilter = new LogoutFilter();
         logoutFilter.setConfig(casConfig());
+        logoutFilter.setCentralLogout(true);
+        logoutFilter.setLocalLogout(true);
+
         filters.put("callbackFilter", callbackFilter);
         filters.put("logoutFilter", logoutFilter);
         filters.put("casSecurityFilter", casSecurityFilter());
@@ -195,14 +203,23 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
     }
 
     @Bean
-    protected SecurityManager securityManager() {
-        DefaultSecurityManager securityManager = new DefaultSecurityManager();
-        securityManager.setSubjectFactory(subjectFactory());
-        return securityManager;
+    public FilterRegistrationBean delegatingFilterProxy(){
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        DelegatingFilterProxy proxy = new DelegatingFilterProxy();
+        proxy.setTargetFilterLifecycle(true);
+        proxy.setTargetBeanName("shiroFilter");
+        filterRegistrationBean.setFilter(proxy);
+        return filterRegistrationBean;
     }
 
     @Bean
+    protected WebSecurityManager securityManager() {
+        return new DefaultWebSecurityManager(pac4jRealm());
+    }
+
+    @Bean("shiroFilter")
     protected ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
+        ((DefaultSecurityManager)securityManager).setSubjectFactory(subjectFactory());
         ShiroFilterFactoryBean shiroFilterFactoryBean = super.shiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setFilters(filters());

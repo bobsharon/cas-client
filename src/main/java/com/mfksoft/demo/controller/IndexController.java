@@ -36,7 +36,7 @@ public class IndexController {
     @Autowired
     private JwtGenerator jwtGenerator;
 
-    @Value("${cas.client-host-url}")
+    @Value("${app.serviceUrl}")
     private String serviceUrl;
 
     @GetMapping("/user/detail")

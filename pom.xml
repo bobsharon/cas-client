@@ -52,12 +52,6 @@
             <artifactId>cas-client-core</artifactId>
             <version>${cas.client.version}</version>
         </dependency>
-        <!-- CAS client auto configuration -->
-        <dependency>
-            <groupId>net.unicon.cas</groupId>
-            <artifactId>cas-client-autoconfig-support</artifactId>
-            <version>${cas.autoconfig.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/io.buji/buji-pac4j -->
         <dependency>
             <groupId>io.buji</groupId>
