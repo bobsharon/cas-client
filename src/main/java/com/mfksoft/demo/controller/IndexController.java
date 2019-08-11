@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ public class IndexController {
      * @param response response
      * @return Object
      */
-    @RequestMapping("/app/login")
+    @PostMapping("/app/login")
     public Object login(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> model = new HashMap<>(1);
         J2EContext context = new J2EContext(request, response);
