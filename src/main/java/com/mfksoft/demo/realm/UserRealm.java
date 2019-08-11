@@ -26,7 +26,6 @@ public class UserRealm extends Pac4jRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         Pac4jToken token = (Pac4jToken)authenticationToken;
         List<CommonProfile> profiles = token.getProfiles();
-        // TODO
         Pac4jPrincipal principal = new Pac4jPrincipal(profiles, this.getPrincipalNameAttribute());
         PrincipalCollection principalCollection = new SimplePrincipalCollection(principal, this.getName());
         return new SimpleAuthenticationInfo(principalCollection, profiles.hashCode());

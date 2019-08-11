@@ -1,5 +1,6 @@
 package com.mfksoft.demo.controller;
 
+import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.pac4j.cas.client.rest.CasRestFormClient;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasRestProfile;
