@@ -1,6 +1,6 @@
 package com.mfksoft.demo.config;
 
-import com.mfksoft.demo.Realm.UserRealm;
+import com.mfksoft.demo.realm.UserRealm;
 import io.buji.pac4j.filter.CallbackFilter;
 import io.buji.pac4j.filter.LogoutFilter;
 import io.buji.pac4j.filter.SecurityFilter;
@@ -9,7 +9,6 @@ import io.buji.pac4j.subject.Pac4jSubjectFactory;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SubjectFactory;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
@@ -232,7 +231,7 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
      * @return Realm
      */
     @Bean
-    public Realm userRealm() {
+    public Pac4jRealm userRealm() {
         Pac4jRealm realm = new UserRealm();
         realm.setCachingEnabled(false);
         realm.setAuthenticationCachingEnabled(false);

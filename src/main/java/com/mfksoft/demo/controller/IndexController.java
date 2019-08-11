@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 获取用户信息, 生成Token
@@ -39,7 +37,7 @@ public class IndexController {
     @Value("${app.serviceUrl}")
     private String serviceUrl;
 
-    @GetMapping("/user/detail")
+    @GetMapping("/app/users")
     public Object detail(HttpServletRequest request) {
         return "users:" + request.getUserPrincipal().getName();
     }
@@ -50,7 +48,7 @@ public class IndexController {
      * @param response response
      * @return Object
      */
-    @RequestMapping("/user/login")
+    @RequestMapping("/app/login")
     public Object login(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> model = new HashMap<>(1);
         J2EContext context = new J2EContext(request, response);
@@ -58,8 +56,14 @@ public class IndexController {
         final Optional<CasRestProfile> profile = manager.get(true);
         TokenCredentials tokenCredentials = casRestFormClient.requestServiceTicket(serviceUrl, profile.get(), context);
         final CasProfile casProfile = casRestFormClient.validateServiceTicket(serviceUrl, tokenCredentials, context);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.MINUTE, 5);
+        // 设置Token在5分钟后过期
+        jwtGenerator.setExpirationTime(cal.getTime());
         String token = jwtGenerator.generate(casProfile);
         model.put("token", token);
         return new HttpEntity<>(model);
     }
+
 }

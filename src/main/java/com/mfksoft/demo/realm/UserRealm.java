@@ -1,4 +1,4 @@
-package com.mfksoft.demo.Realm;
+package com.mfksoft.demo.realm;
 
 import io.buji.pac4j.realm.Pac4jRealm;
 import io.buji.pac4j.subject.Pac4jPrincipal;
@@ -31,4 +31,5 @@ public class UserRealm extends Pac4jRealm {
         PrincipalCollection principalCollection = new SimplePrincipalCollection(principal, this.getName());
         return new SimpleAuthenticationInfo(principalCollection, profiles.hashCode());
     }
+
 }
