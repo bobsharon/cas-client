@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -37,6 +38,9 @@ public class IndexController {
 
     @Value("${app.serviceUrl}")
     private String serviceUrl;
+
+    @Resource
+    private String test;
 
     @GetMapping("/app/users")
     public Object detail(HttpServletRequest request) {
