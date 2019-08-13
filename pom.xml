@@ -18,7 +18,6 @@
         <java.version>1.8</java.version>
         <bootstrap.version>4.3.1</bootstrap.version>
         <cas.client.version>3.5.1</cas.client.version>
-        <cas.autoconfig.version>2.3.0-GA</cas.autoconfig.version>
         <pac4j.version>3.6.1</pac4j.version>
         <shiro.version>1.4.0</shiro.version>
     </properties>
