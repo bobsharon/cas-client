@@ -1,53 +1,47 @@
-根目录：com.mfksoft.demo
+单点登录接入方法
 
-1.启动类（DemoApplication.java）推荐放在根目录com.mfksoft.demo包下
+1. 添加以下依赖
 
-2.实体类（domain）
+        <!-- CAS client -->
+        <dependency>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>${cas.client.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.buji/buji-pac4j -->
+        <dependency>
+            <groupId>io.buji</groupId>
+            <artifactId>buji-pac4j</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-http -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-http</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-cas -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-cas</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-jwt -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-jwt</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-spring -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
 
-    A: com.mfksoft.demo.domain（jpa项目）
+2. 复制ShiroConfiguration, IndexController, LogoutController到工程对应目录
 
-    B: com.mfksoft.demo.pojo（mybatis项目）
+   ShiroConfiguration(pac4j及shiro的基础配置, 通过浏览器访问基于Cookie, 用户在平台内只需单点登录后访问其他业务系统不需要再次认证）
+   IndexController(不通过浏览器访问的情况, 首先需要post方式login, 业务系统记录返回的token, 下次访问时把token作为URL的请求参数)
 
-3.数据接口访问层(Dao)
-
-    A: com.mfksoft.demo.repository（jpa项目）
-
-    B: com.mfksoft.demo.mapper（mybatis项目）
-
-4.数据服务接口层（Service）推荐：com.mfksoft.demo.service
-
-5.数据服务实现层（Service Implements）推荐：com.mfksoft.demo.service.impl
-
-    ——使用idea的同学推荐使用com.mfksoft.demo.serviceImpl目录
-
-6.前端控制器层（Controller）推荐：com.mfksoft.demo.controller
-
-7.工具类库（utils）推荐：com.mfksoft.demo.utils
-
-8.配置类（config）推荐：com.mfksoft.demo.config
-
-9.数据传输对象（dto）推荐：com.mfksoft.demo.dto
-
-    ——数据传输对象（Data Transfer Object）用于封装多个实体类（domain）之间的关系，不破坏原有的实体类结构
-
-10.视图包装对象（vo）推荐：com.mfksoft.demo.vo
-
-    ——视图包装对象（View Object）用于封装客户端请求的数据，防止部分数据泄露（如：管理员ID），保证数据安全，不破坏   原有的实体类结构
-
-二、资源目录结构
-
-根目录：resources
-
-1.项目配置文件：resources/application.yml
-
-2.静态资源目录：resources/static/
-
-    ——用于存放html、css、js、图片等资源
-
-3.视图模板目录：resources/templates/
-
-    ——用于存放jsp、thymeleaf等模板文件
-
-4.mybatis映射文件：resources/mapper/（mybatis项目）
-
-5.mybatis配置文件：resources/mapper/config/（mybatis项目）
+3. 参考WelcomeController, 系统可以通过request.getUserPrincipal().getName()方式获得认证通过的用户账号
