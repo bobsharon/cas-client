@@ -1,6 +1,5 @@
 package com.mfksoft.demo.config;
 
-import com.mfksoft.demo.realm.UserRealm;
 import io.buji.pac4j.filter.CallbackFilter;
 import io.buji.pac4j.filter.LogoutFilter;
 import io.buji.pac4j.filter.SecurityFilter;
@@ -214,7 +213,7 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
 
     @Bean
     protected WebSecurityManager securityManager() {
-        return new DefaultWebSecurityManager(userRealm());
+        return new DefaultWebSecurityManager(new Pac4jRealm());
     }
 
     @Bean("shiroFilter")
@@ -224,19 +223,6 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setFilters(filters());
         return shiroFilterFactoryBean;
-    }
-
-    /**
-     * 用户自定义鉴权的Realm
-     * @return Realm
-     */
-    @Bean
-    public Pac4jRealm userRealm() {
-        Pac4jRealm realm = new UserRealm();
-        realm.setCachingEnabled(false);
-        realm.setAuthenticationCachingEnabled(false);
-        realm.setAuthorizationCachingEnabled(false);
-        return realm;
     }
 
 }
