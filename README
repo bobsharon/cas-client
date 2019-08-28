@@ -44,4 +44,6 @@
    ShiroConfiguration(pac4j及shiro的基础配置, 通过浏览器访问基于Cookie, 用户在平台内只需单点登录后访问其他业务系统不需要再次认证）
    IndexController(不通过浏览器访问的情况, 首先需要post方式login, 业务系统记录返回的token, 下次访问时把token作为URL的请求参数)
 
-3. 参考WelcomeController, 系统可以通过request.getUserPrincipal().getName()方式获得认证通过的用户账号
+3. application.properties里配置服务器及业务系统URL
+
+4. 参考WelcomeController, 系统可以通过request.getUserPrincipal().getName()方式获得认证通过的用户账号
