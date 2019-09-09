@@ -20,7 +20,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
-import org.pac4j.http.client.direct.ParameterClient;
+import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -102,6 +102,7 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
         CasClient casClient = new CasClient();
         casClient.setConfiguration(casConfiguration());
         casClient.setCallbackUrl(callbackUrl);
+        casClient.setName("cas");
         return casClient;
     }
 
@@ -110,11 +111,10 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
      * @return HeaderClient
      */
     @Bean
-    protected ParameterClient parameterClient() {
-        ParameterClient parameterClient = new ParameterClient("token", jwtAuthenticator());
-        parameterClient.setSupportGetRequest(true);
-        parameterClient.setName("jwt");
-        return parameterClient;
+    protected HeaderClient headerClient() {
+        HeaderClient headerClient = new HeaderClient("token", jwtAuthenticator());
+        headerClient.setName("jwt");
+        return headerClient;
     }
 
     /**
@@ -124,7 +124,7 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
     @Bean
     protected Clients clients() {
         Clients clients = new Clients();
-        clients.setClients(casClient(), casRestFormClient(), parameterClient());
+        clients.setClients(casClient(), casRestFormClient(), headerClient());
         return clients;
     }
 
@@ -171,7 +171,7 @@ public class ShiroConfiguration extends AbstractShiroWebFilterConfiguration {
     @Bean
     public Filter casSecurityFilter() {
         SecurityFilter securityFilter = new SecurityFilter();
-        securityFilter.setClients("CasClient,rest,jwt");
+        securityFilter.setClients("cas,rest,jwt");
         securityFilter.setConfig(casConfig());
         return securityFilter;
     }
